@@ -91,7 +91,7 @@ class Text extends Component {
 
   updateWordsWithoutCalculate(props) {
     const words = !_.isNil(props.children) ? props.children.toString().split(/\s+/) : [];
-    const title = !_isNil(props.title) ? props.title.toString().split(/\s+/) : [];
+    const title = !_.isNil(props.title) ? props.title.toString().split(/\s+/) : [];
     this.setState({ wordsByLines: [{ words: props.showTitle ? title : words }] });
   }
 
