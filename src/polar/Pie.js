@@ -56,7 +56,7 @@ class Pie extends Component {
       PropTypes.shape({
         offsetRadius: PropTypes.number,
       }),
-      PropTypes.func, PropTypes.element, PropTypes.bool,
+      PropTypes.func, PropTypes.element, PropTypes.bool, PropTypes.string
     ]),
     activeShape: PropTypes.oneOfType([
       PropTypes.object, PropTypes.func, PropTypes.element,
@@ -330,7 +330,7 @@ class Pie extends Component {
     return (
       <Text
         {...props}
-        alignmentBaseline="middle"
+        alignmentBaseline="start"
         className="recharts-pie-label-text"
       >
         {label}
@@ -348,12 +348,16 @@ class Pie extends Component {
     const pieProps = getPresentationAttributes(this.props);
     const customLabelProps = getPresentationAttributes(label);
     const customLabelLineProps = getPresentationAttributes(labelLine);
-    const offsetRadius = (label && label.offsetRadius) || 20;
 
     const labels = sectors.map((entry, i) => {
+      const offsetRadius = entry.labelLineLength || 35;
+      const isLabelEnd = entry.isLabelEnd;
+
       const midAngle = (entry.startAngle + entry.endAngle) / 2;
+      const endAngle = isLabelEnd ? entry.endAngle : midAngle;
+
       const endPoint = polarToCartesian(
-        entry.cx, entry.cy, entry.outerRadius + offsetRadius, midAngle
+        entry.cx, entry.cy, entry.outerRadius + offsetRadius, endAngle
       );
       const labelProps = {
         ...pieProps,
@@ -370,7 +374,7 @@ class Pie extends Component {
         fill: 'none',
         stroke: entry.fill,
         ...customLabelLineProps,
-        points: [polarToCartesian(entry.cx, entry.cy, entry.outerRadius, midAngle), endPoint],
+        points: [polarToCartesian(entry.cx, entry.cy, entry.outerRadius, endAngle), endPoint],
       };
       let realDataKey = dataKey;
       // TODO: compatible to lower versions
