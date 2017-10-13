@@ -69,7 +69,7 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
 
 
       if (nextProps.animationId !== animationId) {
-        this.cachePrevData(sectors);
+        // this.cachePrevData(sectors);
       }
     }
   }, {
@@ -180,7 +180,8 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
         Text,
         _extends({}, props, {
           alignmentBaseline: 'start',
-          className: 'recharts-pie-label-text'
+          className: 'recharts-pie-label-text',
+          fontSize: '30'
         }),
         label
       );
@@ -200,7 +201,8 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
           label = _props3.label,
           labelLine = _props3.labelLine,
           dataKey = _props3.dataKey,
-          valueKey = _props3.valueKey;
+          valueKey = _props3.valueKey,
+          lineAndLabel = _props3.lineAndLabel;
 
       var pieProps = getPresentationAttributes(this.props);
       var customLabelProps = getPresentationAttributes(label);
@@ -215,16 +217,18 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
 
         var endPoint = polarToCartesian(entry.cx, entry.cy, entry.outerRadius + offsetRadius, endAngle);
         var labelProps = _extends({}, pieProps, entry, {
-          stroke: 'none'
+          stroke: lineAndLabel,
+          fill: lineAndLabel
         }, customLabelProps, {
           index: i,
           textAnchor: _this2.getTextAnchor(endPoint.x, entry.cx)
         }, endPoint);
         var lineProps = _extends({}, pieProps, entry, {
           fill: 'none',
-          stroke: entry.fill
+          stroke: lineAndLabel,
+          strokeWidth: '5'
         }, customLabelLineProps, {
-          points: [polarToCartesian(entry.cx, entry.cy, entry.outerRadius, endAngle), endPoint]
+          points: [polarToCartesian(entry.cx, entry.cy, entry.innerRadius, endAngle), endPoint]
         });
         var realDataKey = dataKey;
         // TODO: compatible to lower versions

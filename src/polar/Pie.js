@@ -228,7 +228,7 @@ class Pie extends Component {
     const { animationId, sectors } = this.props;
 
     if (nextProps.animationId !== animationId) {
-      this.cachePrevData(sectors);
+      // this.cachePrevData(sectors);
     }
   }
 
@@ -332,6 +332,7 @@ class Pie extends Component {
         {...props}
         alignmentBaseline="start"
         className="recharts-pie-label-text"
+        fontSize="30"
       >
         {label}
       </Text>
@@ -344,7 +345,7 @@ class Pie extends Component {
     if (isAnimationActive && !this.state.isAnimationFinished) {
       return null;
     }
-    const { label, labelLine, dataKey, valueKey } = this.props;
+    const { label, labelLine, dataKey, valueKey, lineAndLabel } = this.props;
     const pieProps = getPresentationAttributes(this.props);
     const customLabelProps = getPresentationAttributes(label);
     const customLabelLineProps = getPresentationAttributes(labelLine);
@@ -362,7 +363,8 @@ class Pie extends Component {
       const labelProps = {
         ...pieProps,
         ...entry,
-        stroke: 'none',
+        stroke: lineAndLabel,
+        fill: lineAndLabel,
         ...customLabelProps,
         index: i,
         textAnchor: this.getTextAnchor(endPoint.x, entry.cx),
@@ -372,9 +374,10 @@ class Pie extends Component {
         ...pieProps,
         ...entry,
         fill: 'none',
-        stroke: entry.fill,
+        stroke: lineAndLabel,
+        strokeWidth: '5',
         ...customLabelLineProps,
-        points: [polarToCartesian(entry.cx, entry.cy, entry.outerRadius, endAngle), endPoint],
+        points: [polarToCartesian(entry.cx, entry.cy, entry.innerRadius, endAngle), endPoint],
       };
       let realDataKey = dataKey;
       // TODO: compatible to lower versions

@@ -49,10 +49,13 @@ const getSectorPath = ({ cx, cy, innerRadius, outerRadius, startAngle, endAngle 
   if (innerRadius > 0) {
     const innerStartPoint = polarToCartesian(cx, cy, innerRadius, startAngle);
     const innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
-    path += `L ${innerEndPoint.x},${innerEndPoint.y}
-            A ${innerRadius},${innerRadius},0,
-            ${+(Math.abs(angle) > 180)},${+(startAngle <= tempEndAngle)},
-            ${innerStartPoint.x},${innerStartPoint.y} Z`;
+
+    if (innerRadius != 320) { // find a better check
+      path += `L ${innerEndPoint.x},${innerEndPoint.y}
+              A ${innerRadius},${innerRadius},0,
+              ${+(Math.abs(angle) > 180)},${+(startAngle <= tempEndAngle)},
+              ${innerStartPoint.x},${innerStartPoint.y} Z`;
+    }
   } else {
     path += `L ${cx},${cy} Z`;
   }
@@ -141,7 +144,7 @@ class Sector extends Component {
 
   render() {
     const { cx, cy, innerRadius, outerRadius, cornerRadius, startAngle, endAngle,
-      className } = this.props;
+      className, markerEnd={} } = this.props;
 
     if (outerRadius < innerRadius || startAngle === endAngle) { return null; }
 

@@ -69,7 +69,11 @@ var getSectorPath = function getSectorPath(_ref2) {
   if (innerRadius > 0) {
     var innerStartPoint = polarToCartesian(cx, cy, innerRadius, startAngle);
     var innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
-    path += 'L ' + innerEndPoint.x + ',' + innerEndPoint.y + '\n            A ' + innerRadius + ',' + innerRadius + ',0,\n            ' + +(Math.abs(angle) > 180) + ',' + +(startAngle <= tempEndAngle) + ',\n            ' + innerStartPoint.x + ',' + innerStartPoint.y + ' Z';
+
+    if (innerRadius != 320) {
+      // find a better check
+      path += 'L ' + innerEndPoint.x + ',' + innerEndPoint.y + '\n              A ' + innerRadius + ',' + innerRadius + ',0,\n              ' + +(Math.abs(angle) > 180) + ',' + +(startAngle <= tempEndAngle) + ',\n              ' + innerStartPoint.x + ',' + innerStartPoint.y + ' Z';
+    }
   } else {
     path += 'L ' + cx + ',' + cy + ' Z';
   }
@@ -161,7 +165,9 @@ var Sector = pureRender(_class = (_temp = _class2 = function (_Component) {
           cornerRadius = _props.cornerRadius,
           startAngle = _props.startAngle,
           endAngle = _props.endAngle,
-          className = _props.className;
+          className = _props.className,
+          _props$markerEnd = _props.markerEnd,
+          markerEnd = _props$markerEnd === undefined ? {} : _props$markerEnd;
 
 
       if (outerRadius < innerRadius || startAngle === endAngle) {
