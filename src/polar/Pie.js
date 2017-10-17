@@ -406,8 +406,9 @@ class Pie extends Component {
           <Text
             {...props}
             opacity={opacity}
-            type="linear" 
-            className="recharts-pie-label-line" 
+            alignmentBaseline="start"
+            className="recharts-pie-label-text"
+            fontSize="30"
           >
             {value}
           </Text>

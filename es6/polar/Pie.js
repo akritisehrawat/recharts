@@ -271,8 +271,9 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
             Text,
             _extends({}, props, {
               opacity: opacity,
-              type: 'linear',
-              className: 'recharts-pie-label-line'
+              alignmentBaseline: 'start',
+              className: 'recharts-pie-label-text',
+              fontSize: '30'
             }),
             value
           );
