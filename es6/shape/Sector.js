@@ -55,7 +55,8 @@ var getSectorPath = function getSectorPath(_ref2) {
       innerRadius = _ref2.innerRadius,
       outerRadius = _ref2.outerRadius,
       startAngle = _ref2.startAngle,
-      endAngle = _ref2.endAngle;
+      endAngle = _ref2.endAngle,
+      className = _ref2.className;
 
   var angle = getDeltaAngle(startAngle, endAngle);
 
@@ -71,7 +72,6 @@ var getSectorPath = function getSectorPath(_ref2) {
     var innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
 
     if (innerRadius != 320) {
-      // find a better check
       path += 'L ' + innerEndPoint.x + ',' + innerEndPoint.y + '\n              A ' + innerRadius + ',' + innerRadius + ',0,\n              ' + +(Math.abs(angle) > 180) + ',' + +(startAngle <= tempEndAngle) + ',\n              ' + innerStartPoint.x + ',' + innerStartPoint.y + ' Z';
     }
   } else {
@@ -88,7 +88,8 @@ var getSectorWithCorner = function getSectorWithCorner(_ref3) {
       outerRadius = _ref3.outerRadius,
       cornerRadius = _ref3.cornerRadius,
       startAngle = _ref3.startAngle,
-      endAngle = _ref3.endAngle;
+      endAngle = _ref3.endAngle,
+      className = _ref3.className;
 
   var sign = mathSign(endAngle - startAngle);
 
@@ -110,7 +111,7 @@ var getSectorWithCorner = function getSectorWithCorner(_ref3) {
 
   if (outerArcAngle < 0) {
     return getSectorPath({
-      cx: cx, cy: cy, innerRadius: innerRadius, outerRadius: outerRadius, startAngle: startAngle, endAngle: endAngle
+      cx: cx, cy: cy, innerRadius: innerRadius, outerRadius: outerRadius, startAngle: startAngle, endAngle: endAngle, className: className
     });
   }
 
@@ -183,10 +184,11 @@ var Sector = pureRender(_class = (_temp = _class2 = function (_Component) {
         path = getSectorWithCorner({
           cx: cx, cy: cy, innerRadius: innerRadius, outerRadius: outerRadius,
           cornerRadius: Math.min(cr, deltaRadius / 2),
-          startAngle: startAngle, endAngle: endAngle
+          startAngle: startAngle, endAngle: endAngle,
+          className: className
         });
       } else {
-        path = getSectorPath({ cx: cx, cy: cy, innerRadius: innerRadius, outerRadius: outerRadius, startAngle: startAngle, endAngle: endAngle });
+        path = getSectorPath({ cx: cx, cy: cy, innerRadius: innerRadius, outerRadius: outerRadius, startAngle: startAngle, endAngle: endAngle, className: className });
       }
 
       return React.createElement('path', _extends({}, getPresentationAttributes(this.props), filterEventAttributes(this.props), {

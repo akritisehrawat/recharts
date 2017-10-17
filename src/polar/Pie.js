@@ -315,6 +315,41 @@ class Pie extends Component {
     return <Curve {...props} type="linear" className="recharts-pie-label-line" />;
   }
 
+  renderFadeLabelLineItem(option, props) {
+    if (React.isValidElement(option)) {
+      return React.cloneElement(option, props);
+    } else if (_.isFunction(option)) {
+      return option(props);
+    }
+
+    const { animationBegin, animationDuration, animationEasing='ease-out', animationId } = this.props;
+
+    return <Animate
+      easing={animationEasing}
+      duration={animationDuration}
+      begin={animationBegin}
+      key={`fade-line-${animationId}`}
+      onAnimationEnd={this.handleAnimationEnd}
+      from={{
+        opacity: '0',
+      }}
+      to={{
+        opacity: '1',
+      }}
+    >
+      {
+        ({ opacity }) => (
+          <Curve 
+            {...props}
+            opacity={opacity}
+            type="linear" 
+            className="recharts-pie-label-line" 
+          />
+        )
+      }
+    </Animate>
+  }
+
   renderLabelItem(option, props, value) {
     if (React.isValidElement(option)) {
       return React.cloneElement(option, props);
@@ -339,13 +374,55 @@ class Pie extends Component {
     );
   }
 
+  renderFadeLabelItem(option, props, value) {
+    if (React.isValidElement(option)) {
+      return React.cloneElement(option, props);
+    }
+    let label = value;
+    if (_.isFunction(option)) {
+      label = option(props);
+      if (React.isValidElement(label)) {
+        return label;
+      }
+    }
+
+    const { animationBegin, animationDuration, animationEasing='ease-out', animationId } = this.props;
+
+    return <Animate
+      easing={animationEasing}
+      duration={animationDuration}
+      begin={animationBegin}
+      key={`fade-label-${animationId}`}
+      onAnimationEnd={this.handleAnimationEnd}
+      from={{
+        opacity: '0',
+      }}
+      to={{
+        opacity: '1',
+      }}
+    >
+      {
+        ({ opacity }) => (
+          <Text
+            {...props}
+            opacity={opacity}
+            type="linear" 
+            className="recharts-pie-label-line" 
+          >
+            {value}
+          </Text>
+        )
+      }
+    </Animate>
+  }
+
   renderLabels(sectors) {
     const { isAnimationActive } = this.props;
 
     if (isAnimationActive && !this.state.isAnimationFinished) {
       return null;
     }
-    const { label, labelLine, dataKey, valueKey, lineAndLabel } = this.props;
+    const { label, labelLine, dataKey, valueKey, lineAndLabel, isFadeActive } = this.props;
     const pieProps = getPresentationAttributes(this.props);
     const customLabelProps = getPresentationAttributes(label);
     const customLabelLineProps = getPresentationAttributes(labelLine);
@@ -389,8 +466,8 @@ class Pie extends Component {
 
       return (
         <Layer key={`label-${i}`}>
-          {labelLine && this.renderLabelLineItem(labelLine, lineProps)}
-          {this.renderLabelItem(label, labelProps, getValueByDataKey(entry, realDataKey))}
+          {labelLine && (isFadeActive ? this.renderFadeLabelLineItem(labelLine, lineProps) : this.renderLabelLineItem(labelLine, lineProps))}
+          {isFadeActive ? this.renderFadeLabelItem(label, labelProps, getValueByDataKey(entry, realDataKey)) : this.renderLabelItem(label, labelProps, getValueByDataKey(entry, realDataKey))}
         </Layer>
       );
     });
@@ -411,7 +488,7 @@ class Pie extends Component {
   }
 
   renderSectorsStatically(sectors) {
-    const { activeShape } = this.props;
+    const { activeShape, isFadeActive } = this.props;
 
     return sectors.map((entry, i) => (
       <Layer
@@ -419,7 +496,9 @@ class Pie extends Component {
         {...filterEventsOfChild(this.props, entry, i)}
         key={`sector-${i}`}
       >
-        {this.renderSectorItem(this.isActiveIndex(i) ? activeShape : null, entry)}
+        {isFadeActive ? 
+          this.renderSectorsWithFade(this.isActiveIndex(i) ? activeShape : null, entry) : 
+          this.renderSectorItem(this.isActiveIndex(i) ? activeShape : null, entry)}
       </Layer>
     ));
   }
@@ -487,6 +566,32 @@ class Pie extends Component {
         }
       </Animate>
     );
+  }
+
+  renderSectorsWithFade(option, props) {
+    const { animationBegin, animationDuration, animationEasing, animationId } = this.props;
+    
+    return <Animate
+      easing={animationEasing}
+      duration={animationDuration}
+      begin={animationBegin}
+      key={`fade-${animationId}`}
+      from={{
+        opacity: '0',
+      }}
+      to={{
+        opacity: '1',
+      }}
+    >
+      {
+        ({ opacity }) => (
+          <Sector 
+            {...props} 
+            opacity={opacity}
+          />
+        )
+      }
+    </Animate>
   }
 
   renderSectors() {

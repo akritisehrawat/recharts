@@ -163,6 +163,48 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
       return React.createElement(Curve, _extends({}, props, { type: 'linear', className: 'recharts-pie-label-line' }));
     }
   }, {
+    key: 'renderFadeLabelLineItem',
+    value: function renderFadeLabelLineItem(option, props) {
+      if (React.isValidElement(option)) {
+        return React.cloneElement(option, props);
+      } else if (_isFunction(option)) {
+        return option(props);
+      }
+
+      var _props3 = this.props,
+          animationBegin = _props3.animationBegin,
+          animationDuration = _props3.animationDuration,
+          _props3$animationEasi = _props3.animationEasing,
+          animationEasing = _props3$animationEasi === undefined ? 'ease-out' : _props3$animationEasi,
+          animationId = _props3.animationId;
+
+
+      return React.createElement(
+        Animate,
+        {
+          easing: animationEasing,
+          duration: animationDuration,
+          begin: animationBegin,
+          key: 'fade-line-' + animationId,
+          onAnimationEnd: this.handleAnimationEnd,
+          from: {
+            opacity: '0'
+          },
+          to: {
+            opacity: '1'
+          }
+        },
+        function (_ref3) {
+          var opacity = _ref3.opacity;
+          return React.createElement(Curve, _extends({}, props, {
+            opacity: opacity,
+            type: 'linear',
+            className: 'recharts-pie-label-line'
+          }));
+        }
+      );
+    }
+  }, {
     key: 'renderLabelItem',
     value: function renderLabelItem(option, props, value) {
       if (React.isValidElement(option)) {
@@ -187,6 +229,57 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
       );
     }
   }, {
+    key: 'renderFadeLabelItem',
+    value: function renderFadeLabelItem(option, props, value) {
+      if (React.isValidElement(option)) {
+        return React.cloneElement(option, props);
+      }
+      var label = value;
+      if (_isFunction(option)) {
+        label = option(props);
+        if (React.isValidElement(label)) {
+          return label;
+        }
+      }
+
+      var _props4 = this.props,
+          animationBegin = _props4.animationBegin,
+          animationDuration = _props4.animationDuration,
+          _props4$animationEasi = _props4.animationEasing,
+          animationEasing = _props4$animationEasi === undefined ? 'ease-out' : _props4$animationEasi,
+          animationId = _props4.animationId;
+
+
+      return React.createElement(
+        Animate,
+        {
+          easing: animationEasing,
+          duration: animationDuration,
+          begin: animationBegin,
+          key: 'fade-label-' + animationId,
+          onAnimationEnd: this.handleAnimationEnd,
+          from: {
+            opacity: '0'
+          },
+          to: {
+            opacity: '1'
+          }
+        },
+        function (_ref4) {
+          var opacity = _ref4.opacity;
+          return React.createElement(
+            Text,
+            _extends({}, props, {
+              opacity: opacity,
+              type: 'linear',
+              className: 'recharts-pie-label-line'
+            }),
+            value
+          );
+        }
+      );
+    }
+  }, {
     key: 'renderLabels',
     value: function renderLabels(sectors) {
       var _this2 = this;
@@ -197,12 +290,13 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
       if (isAnimationActive && !this.state.isAnimationFinished) {
         return null;
       }
-      var _props3 = this.props,
-          label = _props3.label,
-          labelLine = _props3.labelLine,
-          dataKey = _props3.dataKey,
-          valueKey = _props3.valueKey,
-          lineAndLabel = _props3.lineAndLabel;
+      var _props5 = this.props,
+          label = _props5.label,
+          labelLine = _props5.labelLine,
+          dataKey = _props5.dataKey,
+          valueKey = _props5.valueKey,
+          lineAndLabel = _props5.lineAndLabel,
+          isFadeActive = _props5.isFadeActive;
 
       var pieProps = getPresentationAttributes(this.props);
       var customLabelProps = getPresentationAttributes(label);
@@ -241,8 +335,8 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
         return React.createElement(
           Layer,
           { key: 'label-' + i },
-          labelLine && _this2.renderLabelLineItem(labelLine, lineProps),
-          _this2.renderLabelItem(label, labelProps, getValueByDataKey(entry, realDataKey))
+          labelLine && (isFadeActive ? _this2.renderFadeLabelLineItem(labelLine, lineProps) : _this2.renderLabelLineItem(labelLine, lineProps)),
+          isFadeActive ? _this2.renderFadeLabelItem(label, labelProps, getValueByDataKey(entry, realDataKey)) : _this2.renderLabelItem(label, labelProps, getValueByDataKey(entry, realDataKey))
         );
       });
 
@@ -270,7 +364,9 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
     value: function renderSectorsStatically(sectors) {
       var _this3 = this;
 
-      var activeShape = this.props.activeShape;
+      var _props6 = this.props,
+          activeShape = _props6.activeShape,
+          isFadeActive = _props6.isFadeActive;
 
 
       return sectors.map(function (entry, i) {
@@ -281,7 +377,7 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
           }, filterEventsOfChild(_this3.props, entry, i), {
             key: 'sector-' + i
           }),
-          _this3.renderSectorItem(_this3.isActiveIndex(i) ? activeShape : null, entry)
+          isFadeActive ? _this3.renderSectorsWithFade(_this3.isActiveIndex(i) ? activeShape : null, entry) : _this3.renderSectorItem(_this3.isActiveIndex(i) ? activeShape : null, entry)
         );
       });
     }
@@ -290,13 +386,13 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
     value: function renderSectorsWithAnimation() {
       var _this4 = this;
 
-      var _props4 = this.props,
-          sectors = _props4.sectors,
-          isAnimationActive = _props4.isAnimationActive,
-          animationBegin = _props4.animationBegin,
-          animationDuration = _props4.animationDuration,
-          animationEasing = _props4.animationEasing,
-          animationId = _props4.animationId;
+      var _props7 = this.props,
+          sectors = _props7.sectors,
+          isAnimationActive = _props7.isAnimationActive,
+          animationBegin = _props7.animationBegin,
+          animationDuration = _props7.animationDuration,
+          animationEasing = _props7.animationEasing,
+          animationId = _props7.animationId;
       var prevSectors = this.state.prevSectors;
 
 
@@ -312,8 +408,8 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
           key: 'pie-' + animationId,
           onAnimationEnd: this.handleAnimationEnd
         },
-        function (_ref3) {
-          var t = _ref3.t;
+        function (_ref5) {
+          var t = _ref5.t;
 
           var stepData = [];
           var first = sectors && sectors[0];
@@ -357,11 +453,43 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
       );
     }
   }, {
+    key: 'renderSectorsWithFade',
+    value: function renderSectorsWithFade(option, props) {
+      var _props8 = this.props,
+          animationBegin = _props8.animationBegin,
+          animationDuration = _props8.animationDuration,
+          animationEasing = _props8.animationEasing,
+          animationId = _props8.animationId;
+
+
+      return React.createElement(
+        Animate,
+        {
+          easing: animationEasing,
+          duration: animationDuration,
+          begin: animationBegin,
+          key: 'fade-' + animationId,
+          from: {
+            opacity: '0'
+          },
+          to: {
+            opacity: '1'
+          }
+        },
+        function (_ref6) {
+          var opacity = _ref6.opacity;
+          return React.createElement(Sector, _extends({}, props, {
+            opacity: opacity
+          }));
+        }
+      );
+    }
+  }, {
     key: 'renderSectors',
     value: function renderSectors() {
-      var _props5 = this.props,
-          sectors = _props5.sectors,
-          isAnimationActive = _props5.isAnimationActive;
+      var _props9 = this.props,
+          sectors = _props9.sectors,
+          isAnimationActive = _props9.isAnimationActive;
       var prevSectors = this.state.prevSectors;
 
 
@@ -373,16 +501,16 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props6 = this.props,
-          hide = _props6.hide,
-          sectors = _props6.sectors,
-          className = _props6.className,
-          label = _props6.label,
-          cx = _props6.cx,
-          cy = _props6.cy,
-          innerRadius = _props6.innerRadius,
-          outerRadius = _props6.outerRadius,
-          isAnimationActive = _props6.isAnimationActive;
+      var _props10 = this.props,
+          hide = _props10.hide,
+          sectors = _props10.sectors,
+          className = _props10.className,
+          label = _props10.label,
+          cx = _props10.cx,
+          cy = _props10.cy,
+          innerRadius = _props10.innerRadius,
+          outerRadius = _props10.outerRadius,
+          isAnimationActive = _props10.isAnimationActive;
 
 
       if (hide || !sectors || !sectors.length || !isNumber(cx) || !isNumber(cy) || !isNumber(innerRadius) || !isNumber(outerRadius)) {
@@ -466,9 +594,9 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
   animationDuration: 1500,
   animationEasing: 'ease',
   nameKey: 'name'
-}, _class2.parseDeltaAngle = function (_ref4) {
-  var startAngle = _ref4.startAngle,
-      endAngle = _ref4.endAngle;
+}, _class2.parseDeltaAngle = function (_ref7) {
+  var startAngle = _ref7.startAngle,
+      endAngle = _ref7.endAngle;
 
   var sign = mathSign(endAngle - startAngle);
   var deltaAngle = Math.min(Math.abs(endAngle - startAngle), 360);
@@ -511,11 +639,11 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
   var maxRadius = item.props.maxRadius || Math.sqrt(width * width + height * height) / 2;
 
   return { cx: cx, cy: cy, innerRadius: innerRadius, outerRadius: outerRadius, maxRadius: maxRadius };
-}, _class2.getComposedData = function (_ref5) {
-  var item = _ref5.item,
-      offset = _ref5.offset,
-      onItemMouseLeave = _ref5.onItemMouseLeave,
-      onItemMouseEnter = _ref5.onItemMouseEnter;
+}, _class2.getComposedData = function (_ref8) {
+  var item = _ref8.item,
+      offset = _ref8.offset,
+      onItemMouseLeave = _ref8.onItemMouseLeave,
+      onItemMouseEnter = _ref8.onItemMouseEnter;
 
   var pieData = Pie.getRealPieData(item);
   if (!pieData || !pieData.length) {

@@ -32,7 +32,7 @@ const getTangentCircle = ({ cx, cy, radius, angle, sign, isExternal,
   return { center, circleTangency, lineTangency, theta };
 };
 
-const getSectorPath = ({ cx, cy, innerRadius, outerRadius, startAngle, endAngle }) => {
+const getSectorPath = ({ cx, cy, innerRadius, outerRadius, startAngle, endAngle, className }) => {
   const angle = getDeltaAngle(startAngle, endAngle);
 
   // When the angle of sector equals to 360, star point and end point coincide
@@ -50,7 +50,7 @@ const getSectorPath = ({ cx, cy, innerRadius, outerRadius, startAngle, endAngle 
     const innerStartPoint = polarToCartesian(cx, cy, innerRadius, startAngle);
     const innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
 
-    if (innerRadius != 320) { // find a better check
+    if (innerRadius != 320) {
       path += `L ${innerEndPoint.x},${innerEndPoint.y}
               A ${innerRadius},${innerRadius},0,
               ${+(Math.abs(angle) > 180)},${+(startAngle <= tempEndAngle)},
@@ -64,7 +64,7 @@ const getSectorPath = ({ cx, cy, innerRadius, outerRadius, startAngle, endAngle 
 };
 
 const getSectorWithCorner = ({ cx, cy, innerRadius, outerRadius, cornerRadius, startAngle,
-  endAngle }) => {
+  endAngle, className }) => {
   const sign = mathSign(endAngle - startAngle);
   const { circleTangency: soct, lineTangency: solt, theta: sot } =
     getTangentCircle({
@@ -78,7 +78,7 @@ const getSectorWithCorner = ({ cx, cy, innerRadius, outerRadius, cornerRadius, s
 
   if (outerArcAngle < 0) {
     return getSectorPath({
-      cx, cy, innerRadius, outerRadius, startAngle, endAngle,
+      cx, cy, innerRadius, outerRadius, startAngle, endAngle, className
     });
   }
 
@@ -158,9 +158,10 @@ class Sector extends Component {
         cx, cy, innerRadius, outerRadius,
         cornerRadius: Math.min(cr, deltaRadius / 2),
         startAngle, endAngle,
+        className
       });
     } else {
-      path = getSectorPath({ cx, cy, innerRadius, outerRadius, startAngle, endAngle });
+      path = getSectorPath({ cx, cy, innerRadius, outerRadius, startAngle, endAngle, className });
     }
 
     return (
