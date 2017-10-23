@@ -453,7 +453,7 @@ class Pie extends Component {
         ...entry,
         fill: 'none',
         stroke: lineAndLabel,
-        strokeWidth: '5',
+        strokeWidth: '10',
         ...customLabelLineProps,
         points: [polarToCartesian(entry.cx, entry.cy, entry.innerRadius, endAngle), endPoint],
       };

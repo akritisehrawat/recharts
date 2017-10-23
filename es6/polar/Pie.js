@@ -321,7 +321,7 @@ var Pie = pureRender(_class = (_temp2 = _class2 = function (_Component) {
         var lineProps = _extends({}, pieProps, entry, {
           fill: 'none',
           stroke: lineAndLabel,
-          strokeWidth: '5'
+          strokeWidth: '10'
         }, customLabelLineProps, {
           points: [polarToCartesian(entry.cx, entry.cy, entry.innerRadius, endAngle), endPoint]
         });
