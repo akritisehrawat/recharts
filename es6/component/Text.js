@@ -184,7 +184,7 @@ var Text = (_temp2 = _class = function (_Component) {
           x: x,
           y: y,
           className: classNames('recharts-text', className),
-          textAnchor: textAnchor
+          textAnchor: 'middle'
         }),
         wordsByLines.map(function (line, index) {
           return React.createElement(

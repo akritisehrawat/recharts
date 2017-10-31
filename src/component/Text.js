@@ -169,7 +169,7 @@ class Text extends Component {
         x={x}
         y={y}
         className={classNames('recharts-text', className)}
-        textAnchor={textAnchor}
+        textAnchor='middle'
       >
         {
         wordsByLines.map((line, index) => (
