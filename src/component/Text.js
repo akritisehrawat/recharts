@@ -41,7 +41,7 @@ class Text extends Component {
     lineHeight: '1em',
     capHeight: '0.71em', // Magic number from d3
     scaleToFit: false,
-    textAnchor: 'start',
+    textAnchor: 'end',
     verticalAnchor: 'end', // Maintain compat with existing charts / default SVG behavior
   };
 
