@@ -10,7 +10,7 @@ import { getStringSize } from '../util/DOMUtils';
 const calculateWordWidths = (props) => {
   try {
     const words = !_.isNil(props.children) ? props.children.toString().split(/\s+/) : [];
-    const title = !_isNil(props.title) ? props.title.toString().split('-') : [];
+    const title = !_.isNil(props.title) ? props.title.toString().split('-') : [];
     const wordsWithComputedWidth = (props.showTitle ? title : words).map(word => (
       { word, width: getStringSize(word, props.style).width }
     ));
@@ -41,7 +41,7 @@ class Text extends Component {
     lineHeight: '1em',
     capHeight: '0.71em', // Magic number from d3
     scaleToFit: false,
-    textAnchor: 'middle',
+    textAnchor: 'start',
     verticalAnchor: 'end', // Maintain compat with existing charts / default SVG behavior
   };
 
@@ -147,7 +147,7 @@ class Text extends Component {
         break;
       default:
         // startDy = reduceCSSCalc(`calc(${wordsByLines.length - 1} * -${lineHeight})`);
-        standDy = '-1.5em';
+        startDy = '-1.5em';
         break;
     }
 

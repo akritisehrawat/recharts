@@ -1,4 +1,4 @@
-import _isNil2 from 'lodash/isNil';
+import _isNil from 'lodash/isNil';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -25,7 +25,7 @@ import { getStringSize } from '../util/DOMUtils';
 
 var calculateWordWidths = function calculateWordWidths(props) {
   try {
-    var words = !_isNil2(props.children) ? props.children.toString().split(/\s+/) : [];
+    var words = !_isNil(props.children) ? props.children.toString().split(/\s+/) : [];
     var title = !_isNil(props.title) ? props.title.toString().split('-') : [];
     var wordsWithComputedWidth = (props.showTitle ? title : words).map(function (word) {
       return { word: word, width: getStringSize(word, props.style).width };
@@ -100,8 +100,8 @@ var Text = (_temp2 = _class = function (_Component) {
   }, {
     key: 'updateWordsWithoutCalculate',
     value: function updateWordsWithoutCalculate(props) {
-      var words = !_isNil2(props.children) ? props.children.toString().split(/\s+/) : [];
-      var title = !_isNil2(props.title) ? props.title.toString().split(/\s+/) : [];
+      var words = !_isNil(props.children) ? props.children.toString().split(/\s+/) : [];
+      var title = !_isNil(props.title) ? props.title.toString().split(/\s+/) : [];
       this.setState({ wordsByLines: [{ words: props.showTitle ? title : words }] });
     }
   }, {
@@ -162,7 +162,7 @@ var Text = (_temp2 = _class = function (_Component) {
           break;
         default:
           // startDy = reduceCSSCalc(`calc(${wordsByLines.length - 1} * -${lineHeight})`);
-          standDy = '-1.5em';
+          startDy = '-1.5em';
           break;
       }
 
@@ -210,7 +210,7 @@ var Text = (_temp2 = _class = function (_Component) {
   lineHeight: '1em',
   capHeight: '0.71em', // Magic number from d3
   scaleToFit: false,
-  textAnchor: 'middle',
+  textAnchor: 'start',
   verticalAnchor: 'end' // Maintain compat with existing charts / default SVG behavior
 }, _temp2);
 
