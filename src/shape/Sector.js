@@ -50,7 +50,7 @@ const getSectorPath = ({ cx, cy, innerRadius, outerRadius, startAngle, endAngle,
     const innerStartPoint = polarToCartesian(cx, cy, innerRadius, startAngle);
     const innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
 
-    if (innerRadius != 310) {
+    if (innerRadius != 330) {
       path += `L ${innerEndPoint.x},${innerEndPoint.y}
               A ${innerRadius},${innerRadius},0,
               ${+(Math.abs(angle) > 180)},${+(startAngle <= tempEndAngle)},
