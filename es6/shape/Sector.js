@@ -71,7 +71,7 @@ var getSectorPath = function getSectorPath(_ref2) {
     var innerStartPoint = polarToCartesian(cx, cy, innerRadius, startAngle);
     var innerEndPoint = polarToCartesian(cx, cy, innerRadius, tempEndAngle);
 
-    if (innerRadius != 330) {
+    if (innerRadius != 310) {
       path += 'L ' + innerEndPoint.x + ',' + innerEndPoint.y + '\n              A ' + innerRadius + ',' + innerRadius + ',0,\n              ' + +(Math.abs(angle) > 180) + ',' + +(startAngle <= tempEndAngle) + ',\n              ' + innerStartPoint.x + ',' + innerStartPoint.y + ' Z';
     }
   } else {
